@@ -24,6 +24,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addwebsite))
         
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
@@ -42,7 +43,26 @@ class ViewController: UIViewController, WKNavigationDelegate {
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
     }
-
+    
+    @objc func addwebsite() {
+        let ac = UIAlertController(title: "Add Website", message: nil, preferredStyle: .alert)
+        ac.addTextField()
+        
+        ac.addAction(UIAlertAction(title: "Cancle", style: .default))
+        let submitAction = UIAlertAction(title: "Add", style: .default) {
+            [weak self, weak ac] _ in
+            guard let answers = ac?.textFields?[0].text else { return }
+            self?.websites.insert(answers, at: 0)
+            let urll = URL(string: "https://" + answers)
+            self?.webView.load(URLRequest(url: urll!))
+        }
+                
+        ac.addAction(submitAction)
+        present(ac, animated: true)
+        
+        
+    }
+    
     @objc func openTapped() {
         let ac = UIAlertController(title: "Open Page...", message: nil, preferredStyle: .actionSheet)
         for website in websites{
@@ -58,6 +78,11 @@ class ViewController: UIViewController, WKNavigationDelegate {
         let url = URL(string: "https://" + action.title!)!
         webView.load(URLRequest(url: url))
     }
+    
+//    func openPageString(_: answers) {
+//        let url = URL(string: "https://" + answers)!
+//        webView.load(URLRequest(url: url))
+//    }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         title = webView.title
