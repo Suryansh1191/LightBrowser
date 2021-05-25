@@ -10,15 +10,14 @@ import WebKit
 
 class ViewController: UIViewController, WKNavigationDelegate {
 
-    var webView: WKWebView!
+    //var webView: WKWebView!
+    @IBOutlet var webView: WKWebView!
     var progreView: UIProgressView!
-    var websites = ["apple.com", "www.google.com"]
+    var websites = ["www.google.com", "amazon.com" , "apple.com"]
     
-    override func loadView() {
-        webView = WKWebView()
-        webView.navigationDelegate = self
-        view = webView
-    }
+//    override func loadView() {
+//        webView = WKWebView
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +41,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         let url = URL(string: "https://" + websites[0])!
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
+        title = websites[0]
     }
     
     @objc func addwebsite() {
@@ -55,6 +55,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
             self?.websites.insert(answers, at: 0)
             let urll = URL(string: "https://" + answers)
             self?.webView.load(URLRequest(url: urll!))
+            self?.title = answers
         }
                 
         ac.addAction(submitAction)
@@ -77,15 +78,12 @@ class ViewController: UIViewController, WKNavigationDelegate {
     func openPage(action: UIAlertAction) {
         let url = URL(string: "https://" + action.title!)!
         webView.load(URLRequest(url: url))
+        title = action.title
     }
-    
-//    func openPageString(_: answers) {
-//        let url = URL(string: "https://" + answers)!
-//        webView.load(URLRequest(url: url))
-//    }
+
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        title = webView.title
+        title = WKWebView().title
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
